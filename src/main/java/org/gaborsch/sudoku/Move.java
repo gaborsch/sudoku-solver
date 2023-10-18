@@ -7,19 +7,21 @@ public class Move {
 	private Type type;
 	private int pos;
 	private int value;
+	private String note;
 	
-	public static Move setValue(int pos, int value) {
-		return new Move(Type.SET_VALUE, pos, value);
+	public static Move setValue(int pos, int value, String note) {
+		return new Move(Type.SET_VALUE, pos, value, note);
 	}
 	
-	public static Move clearFloat(int pos, int value) {
-		return new Move(Type.CLEAR_FLOAT, pos, value);
+	public static Move clearFloat(int pos, int value, String note) {
+		return new Move(Type.CLEAR_FLOAT, pos, value, note);
 	}
 	
-	public Move(Type type, int pos, int value) {
+	public Move(Type type, int pos, int value, String note) {
 		this.type = type;
 		this.pos = pos;
 		this.value = value;
+		this.note = note;
 	}
 
 	public Type getType() {
@@ -36,6 +38,6 @@ public class Move {
 	
 	@Override
 	public String toString() {
-		return type + " "+ value+ " @ " + pos;
+		return type + " "+ value+ " @ " + pos + (note == null ? "" : " ("+note+")");
 	}
 }

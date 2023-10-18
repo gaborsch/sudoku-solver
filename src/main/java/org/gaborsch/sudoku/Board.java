@@ -51,6 +51,29 @@ public class Board {
 			{7, 16, 25, 34, 43, 52, 61, 70, 79}, 
 			{8, 17, 26, 35, 44, 53, 62, 71, 80}};
 	
+
+	private static final int[][][] BOXES_AND_ROWS = {
+			{{0, 1, 2}, {9, 10, 11}, {18, 19, 20}, {}, {}, {}, {}, {}, {}},
+			{{3, 4, 5}, {12, 13, 14}, {21, 22, 23}, {}, {}, {}, {}, {}, {}}, 
+			{{6, 7, 8}, {15, 16, 17}, {24, 25, 26}, {}, {}, {}, {}, {}, {}}, 
+			{{}, {}, {}, {27, 28, 29}, {36, 37, 38}, {45, 46, 47}, {}, {}, {}}, 
+			{{}, {}, {}, {30, 31, 32}, {39, 40, 41}, {48, 49, 50}, {}, {}, {}}, 
+			{{}, {}, {}, {33, 34, 35}, {42, 43, 44}, {51, 52, 53}, {}, {}, {}}, 
+			{{}, {}, {}, {}, {}, {}, {54, 55, 56}, {63, 64, 65}, {72, 73, 74}}, 
+			{{}, {}, {}, {}, {}, {}, {57, 58, 59}, {66, 67, 68}, {75, 76, 77}}, 
+			{{}, {}, {}, {}, {}, {}, {60, 61, 62}, {69, 70, 71}, {78, 79, 80}}};
+			
+	private static final int[][][] BOXES_AND_COLS = {
+			{{0, 9, 18}, {1, 10, 19}, {2, 11, 20}, {}, {}, {}, {}, {}, {}}, 
+			{{}, {}, {}, {3, 12, 21}, {4, 13, 22}, {5, 14, 23}, {}, {}, {}}, 
+			{{}, {}, {}, {}, {}, {}, {6, 15, 24}, {7, 16, 25}, {8, 17, 26}}, 
+			{{27, 36, 45}, {28, 37, 46}, {29, 38, 47}, {}, {}, {}, {}, {}, {}}, 
+			{{}, {}, {}, {30, 39, 48}, {31, 40, 49}, {32, 41, 50}, {}, {}, {}}, 
+			{{}, {}, {}, {}, {}, {}, {33, 42, 51}, {34, 43, 52}, {35, 44, 53}}, 
+			{{54, 63, 72}, {55, 64, 73}, {56, 65, 74}, {}, {}, {}, {}, {}, {}}, 
+			{{}, {}, {}, {57, 66, 75}, {58, 67, 76}, {59, 68, 77}, {}, {}, {}}, 
+			{{}, {}, {}, {}, {}, {}, {60, 69, 78}, {61, 70, 79}, {62, 71, 80}}};
+
 	
 	public static int[] getRowPositions(int rowIndex) {
 		return ROWS[rowIndex];
@@ -84,27 +107,27 @@ public class Board {
 		return v;
 	}
 	
-	public int[] intersectBoxRow(int boxNum, int rowNum) {
-		return intersect(BOXES[boxNum], ROWS[rowNum]);
+	public static int[] intersectBoxRow(int boxNum, int rowNum) {
+		return BOXES_AND_ROWS[boxNum][rowNum];
 	}
-	public int[] intersectBoxCol(int boxNum, int colNum) {
-		return intersect(BOXES[boxNum], COLS[colNum]);
+	public static int[] intersectBoxCol(int boxNum, int colNum) {
+		return BOXES_AND_COLS[boxNum][colNum];
 	}
 	
-	public int[] subtractBoxCol(int boxNum, int colNum) {
+	public static int[] subtractBoxCol(int boxNum, int colNum) {
 		return subtract(BOXES[boxNum], COLS[colNum]);
 	}
-	public int[] subtractBoxRow(int boxNum, int rowNum) {
+	public static int[] subtractBoxRow(int boxNum, int rowNum) {
 		return subtract(BOXES[boxNum], ROWS[rowNum]);
 	}
-	public int[] subtractColBox(int colNum, int boxNum) {
+	public static int[] subtractColBox(int colNum, int boxNum) {
 		return subtract(COLS[colNum], BOXES[boxNum]);
 	}
-	public int[] subtractRowBox(int rowNum, int boxNum) {
+	public static int[] subtractRowBox(int rowNum, int boxNum) {
 		return subtract(ROWS[rowNum], BOXES[boxNum]);
 	}
 
-	private int[] intersect(int[] box, int[] line) {
+	private static int[] intersect(int[] box, int[] line) {
 		// box and line have 3 matches
 		int[] ints = new int[3];
 		int cnt = 0;
@@ -118,7 +141,7 @@ public class Board {
 		return ints;
 	}
 	
-	private int[] subtract(int[] box, int[] line) {
+	private static int[] subtract(int[] box, int[] line) {
 		// box and line have 6 non-matches
 		int[] ints = new int[6];
 		int cnt = 0;
@@ -137,6 +160,9 @@ public class Board {
 		return ints;
 	}
 	
+	/*
+	 * counts how many times the given floating value exists at the given positions 
+	 */
 	public int countFloatingValue(int value, int[] positions) {
 		int count = 0;
 		for (int i = 0; i < positions.length; i++) {
@@ -145,6 +171,18 @@ public class Board {
 			}
 		}
 		return count;
+	}
+	
+	/*
+	 * returns the first position of a floating value using position array
+	 */
+	public int getFirstFloatingValuePosition(int value, int[] positions) {
+		for (int i = 0; i < positions.length; i++) {
+			if(Cell.isFloating(board[positions[i]], value)) {
+				return positions[i];
+			}
+		}
+		return -1;
 	}
 	
 	public void setFixedValue(int pos, int value) {
@@ -164,16 +202,16 @@ public class Board {
 		return board[pos];
 	}
 	
-	public int getRowNum(int pos) {
+	public static int getRowNum(int pos) {
 		return pos / 9;
 	}
 	
-	public int getColNum(int pos) {
+	public static int getColNum(int pos) {
 		return pos % 9;
 	}
 	
-	public int getBoxNum(int pos) {
-		return (pos % 9) / 3 + ((pos / 9) / 3) * 3;
+	public static int getBoxNum(int pos) {
+		return (pos / 27) * 3 + (pos % 9) / 3;
 	}
 
 	public String draw() {
@@ -192,6 +230,7 @@ public class Board {
 				drawLine(nums, 2);
 				drawSeparator(i+1);
 			}
+			drawSummary();
 			return sb.toString();
 		}
 		
@@ -236,6 +275,19 @@ public class Board {
 			drawNl();
 		}
 		
+		private void drawSummary() {
+			int[] counts = new int[] {0,0,0,0,0,0,0,0,0,0};
+			for (int i = 0; i < board.length; i++) {
+				if (Cell.isFixed(board[i])) {
+					counts[Cell.getValue(board[i])]++;
+				}
+			}
+			for (int i = 1; i < counts.length; i++) {
+				sb.append(i).append(":").append(9-counts[i]).append("  ");
+			}
+			drawNl();
+		}
+
 		private void drawNl() {
 			sb.append("\n");
 		}

@@ -13,7 +13,7 @@ public class BoardReader {
 			for (int j = 0; j < 9; j++) {
 				char c = line.charAt(j);
 				if(c >= '1' && c <= '9') {
-					moves.add(Move.setValue(i*9+j, c-'0'));
+					moves.add(Move.setValue(i*9+j, c-'0', "initial"));
 				}
 			}
 			i++;

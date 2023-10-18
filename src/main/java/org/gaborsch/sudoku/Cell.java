@@ -3,12 +3,12 @@ package org.gaborsch.sudoku;
 public class Cell {
 
 	/*
-	 * 00000000 000000PP PPPPPPPF VVVVCCCC
+	 * 00000000 000000FF FFFFFFFX VVVVCCCC
 	 * 
 	 * C: bits for possible counts, values: 1-9
 	 * V: cell value, values: 0: not fixed, 1-9: fixed 
-	 * F: is the value fixed? 1: yes, 0: no
-	 * P: possible values
+	 * X: is the value fixed? 1: yes, 0: no
+	 * F: Floating (possible) values
 	 */
 	
 	// not fixed, all 9 values possible
@@ -19,11 +19,11 @@ public class Cell {
 	private static final int SHIFT_VALUE = 4;
 	private static final int MASK_FIXED = 0x00000100;
 	private static final int SHIFT_FIXED = 8;
-	private static final int MASK_FLOATING = 0x0003fe00;
 	private static final int[] MASK_FLOATING_BY_VALUE = new int[]
 			{ 0, 1<<9, 1<<10, 1<<11, 1<<12, 1<<13, 1<<14, 1<<15, 1<<16, 1<<17 };
 
-	private static final int SHIFT_FLOATING = 9;
+	private static final int MASK_FLOATING = 0x0003fe00;
+	private static final int SHIFT_FLOATING = 8;
 	
 	private Cell() {}
 
@@ -36,7 +36,7 @@ public class Cell {
 	public static boolean isFixed(int bits) {
 		return (bits & MASK_FIXED) >> SHIFT_FIXED == 1;
 	}
-	public static int getFloating(int bits) {
+	public static int getFloatings(int bits) {
 		return (bits & MASK_FLOATING) >> SHIFT_FLOATING;
 	}
 	public static boolean isFloating(int bits, int value) {
@@ -76,5 +76,12 @@ public class Cell {
 		return (cell & (-1 ^ mask)) - 1;
 	}
 	
+	public static int setFloating(int cell, int value) {
+		int mask = MASK_FLOATING_BY_VALUE[value];
+		if ((cell & mask) == mask) {
+			return cell;
+		}		
+		return (cell | mask) + 1;
+	}
 	
 }
