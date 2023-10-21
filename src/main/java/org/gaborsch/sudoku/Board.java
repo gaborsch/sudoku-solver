@@ -114,20 +114,6 @@ public class Board {
 		return subtract(ROWS[rowNum], BOXES[boxNum]);
 	}
 
-	private static int[] intersect(int[] box, int[] line) {
-		// box and line have 3 matches
-		int[] ints = new int[3];
-		int cnt = 0;
-		for (int i = 0; i < box.length; i++) {
-			for (int j = 0; j < line.length; j++) {
-				if (box[i] == line[j]) {
-					ints[cnt++] = box[i];
-				}
-			}
-		}
-		return ints;
-	}
-
 	private static int[] subtract(int[] box, int[] line) {
 		// box and line have 6 non-matches
 		int[] ints = new int[6];
@@ -207,6 +193,15 @@ public class Board {
 
 	public String draw() {
 		return new BoardDrawer().draw();
+	}
+	
+	public boolean isSolved() {
+		for (int i = 0; i < board.length; i++) {
+			if (!Cell.isFixed(board[i])) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public class BoardDrawer {

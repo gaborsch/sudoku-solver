@@ -7,10 +7,14 @@ public class SudokuSolver {
 	boolean info = true;
 	boolean trace = true;
 
-	State state;
+	private State state;
 
 	public SudokuSolver(List<Move> initialSetup) {
 		state = new State(new Board(), initialSetup);
+	}
+	
+	public void addMoves(List<Move> moves) {
+		state.addMoves(moves);
 	}
 
 	public Board solve() {
@@ -35,7 +39,11 @@ public class SudokuSolver {
 
 		return state.getBoard();
 	}
-
+	
+	public Board getCurrentBoard() {
+		return state.getBoard();
+	}
+	
 	private void doSetValue(Board b, Move m) {
 		b.setFixedValue(m.getPos(), m.getValue());
 		int rn = Board.getRowNum(m.getPos());
@@ -164,6 +172,18 @@ public class SudokuSolver {
 			+ "7   19   \n"
 			+ "   73    \n"
 			+ "13   5 4 \n";
+	
+	public static final String SAMPLE_SETUP5 = 
+			  "      3 4\n"
+			+ "   924   \n"
+			+ "4 58 3 6 \n"
+			+ "2 46  7  \n"
+			+ "   5    8\n"
+			+ "  7 3    \n"
+			+ "       2 \n"
+			+ "83     4 \n"
+			+ "6    9  1\n";
+
 
 	public static void main(String[] args) {
 		List<Move> initialSetup = BoardReader.getBoard(SAMPLE_SETUP4);

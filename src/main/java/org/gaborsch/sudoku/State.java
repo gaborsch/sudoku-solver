@@ -22,6 +22,10 @@ public class State {
 	public Board getBoard() {
 		return board;
 	}
+	
+	public void addMoves(List<Move> moves) {
+		moves.forEach(this::addMove);
+	}
 
 	public void addMove(Move m) {
 		switch (m.getType()) {
@@ -45,5 +49,4 @@ public class State {
 		}
 		return m;
 	}
-
 }
