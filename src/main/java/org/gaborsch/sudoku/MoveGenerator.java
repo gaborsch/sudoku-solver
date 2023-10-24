@@ -37,12 +37,12 @@ public class MoveGenerator {
 		for (int v = 1; v <= 9; v++) {
 			// check rows
 			for (int rn = 0; rn < 9; rn += 3) {
-				long excludeRowBoxPairs = checkExclusion(v, floatingsByRowAndBox[rn], floatingsByRowAndBox[rn + 1],
+				int excludeRowBoxPairs = checkExclusion(v, floatingsByRowAndBox[rn], floatingsByRowAndBox[rn + 1],
 						floatingsByRowAndBox[rn + 2]);
 				while ((excludeRowBoxPairs & 0xff) != 0xff) {
-					int excludeRn = (int) (rn + ((excludeRowBoxPairs & 0xf0) >> 4));
+					int excludeRn = (int) (rn + ((excludeRowBoxPairs & 0x30) >> 4));
 					int excludeBn = (int) (excludeRowBoxPairs & 0xf);
-					excludeRowBoxPairs >>= 8;
+					excludeRowBoxPairs >>= 6;
 					// exclude value 'v' from row and box
 					int[] excludePositions = Board.intersectBoxRow(excludeBn, excludeRn);
 					excludeFloatings(v, excludePositions, "box and row " + excludeRn);
@@ -51,12 +51,12 @@ public class MoveGenerator {
 			}
 			// check cols
 			for (int cn = 0; cn < 9; cn += 3) {
-				long excludeColBoxPairs = checkExclusion(v, floatingsByColAndBox[cn], floatingsByColAndBox[cn + 1],
+				int excludeColBoxPairs = checkExclusion(v, floatingsByColAndBox[cn], floatingsByColAndBox[cn + 1],
 						floatingsByColAndBox[cn + 2]);
 				while ((excludeColBoxPairs & 0xff) != 0xff) {
-					int excludeCn = (int) (cn + ((excludeColBoxPairs & 0xf0) >> 4));
+					int excludeCn = (int) (cn + ((excludeColBoxPairs & 0x30) >> 4));
 					int excludeBn = (int) (excludeColBoxPairs & 0xf);
-					excludeColBoxPairs >>= 8;
+					excludeColBoxPairs >>= 6;
 					// exclude value 'v' from row and box
 					int[] excludePositions = Board.intersectBoxCol(excludeBn, excludeCn);
 					excludeFloatings(v, excludePositions, "box and col " + excludeCn);
@@ -65,8 +65,8 @@ public class MoveGenerator {
 		}
 	}
 
-	private long checkExclusion(int v, int[] s0, int[] s1, int[] s2) {
-		long retval = 0xff;
+	private int checkExclusion(int v, int[] s0, int[] s1, int[] s2) {
+		int retval = 0xff;
 		// find out possible boxes (always 3)
 		int[] b = new int[3];
 		for (int bn = 0, bi = 0; bi < 3; bn++) {
@@ -96,8 +96,8 @@ public class MoveGenerator {
 		return retval;
 	}
 
-	private final long markExclude(long retval, int sn, int bn, boolean condition) {
-		return condition ? (retval << 8) | (sn << 4) | bn : retval;
+	private final int markExclude(int retval, int sn, int bn, boolean condition) {
+		return condition ? (retval << 6) | (sn << 4) | bn : retval;
 	}
 
 	private void generateMovesForSinglePossibilities() {
