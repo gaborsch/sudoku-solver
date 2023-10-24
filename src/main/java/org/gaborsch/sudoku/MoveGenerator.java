@@ -24,8 +24,8 @@ public class MoveGenerator {
 	private static final int FIXED_MARKER_IN_FLOATINGS = 1 << 16;
 
 	private void generateMovesForRowColExclusion() {
-		int[][] floatingsByRowAndBox = new int[9][9];
-		int[][] floatingsByColAndBox = new int[9][9];
+		int[][] floatingsByRowAndBox = VectorCache.floatingsByRowAndBoxMatrix();
+		int[][] floatingsByColAndBox = VectorCache.floatingsByColAndBoxMatrix();
 		for (int pos = 0; pos < Board.BOARD_SIZE; pos++) {
 			int floatings = Cell.getFloatings(board.getCell(pos));
 			int fixed = Cell.isFixed(board.getCell(pos)) ? FIXED_MARKER_IN_FLOATINGS : 0;
@@ -45,7 +45,7 @@ public class MoveGenerator {
 					excludeRowBoxPairs >>= 6;
 					// exclude value 'v' from row and box
 					int[] excludePositions = Board.intersectBoxRow(excludeBn, excludeRn);
-					excludeFloatings(v, excludePositions, "box and row " + excludeRn);
+					excludeFloatings(v, excludePositions, "box "+excludeBn+" and row " + excludeRn);
 				}
 
 			}
@@ -59,7 +59,7 @@ public class MoveGenerator {
 					excludeColBoxPairs >>= 6;
 					// exclude value 'v' from row and box
 					int[] excludePositions = Board.intersectBoxCol(excludeBn, excludeCn);
-					excludeFloatings(v, excludePositions, "box and col " + excludeCn);
+					excludeFloatings(v, excludePositions, "box "+excludeBn+" and col " + excludeCn);
 				}
 			}
 		}
@@ -68,7 +68,7 @@ public class MoveGenerator {
 	private int checkExclusion(int v, int[] s0, int[] s1, int[] s2) {
 		int retval = 0xff;
 		// find out possible boxes (always 3)
-		int[] b = new int[3];
+		int[] b = VectorCache.checkExclusionVector();
 		for (int bn = 0, bi = 0; bi < 3; bn++) {
 			if (s0[bn] + s1[bn] + s2[bn] > 0) {
 				b[bi++] = bn;
@@ -138,7 +138,7 @@ public class MoveGenerator {
 	}
 
 	private void partition(int[] positions, String note) {
-		int[] floatings = new int[positions.length];
+		int[] floatings = VectorCache.partitionFloatingsVector(positions.length);
 		// extract floating bits (9 bits, offset 1-9)
 		int variantMask = 0;
 		for (int i = 0; i < positions.length; i++) {
@@ -158,7 +158,7 @@ public class MoveGenerator {
 			// if n values fit n places, these values should not appear elsewhere
 			if (Integer.bitCount(u) == Integer.bitCount(variant & variantMask)) {
 				// clear all positions that are in variant
-				int[] positionsCleared = new int[positions.length];
+				int[] positionsCleared = VectorCache.partitionPositionsClearedVector(positions.length);
 				for (int i = 0; i < positions.length; i++) {
 					positionsCleared[i] = ((variant & (1 << i)) > 0) ? -1 : positions[i];
 				}

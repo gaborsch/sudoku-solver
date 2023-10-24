@@ -83,7 +83,7 @@ public class Board {
 	}
 
 	private int[] fetchByMapping(int[] map) {
-		int[] v = new int[map.length];
+		int[] v = VectorCache.fetchByMappingVector(map.length);
 		for (int i = 0; i < map.length; i++) {
 			v[i] = board[map[i]];
 		}
@@ -96,41 +96,6 @@ public class Board {
 
 	public static int[] intersectBoxCol(int boxNum, int colNum) {
 		return BOXES_AND_COLS[boxNum][colNum];
-	}
-
-	public static int[] subtractBoxCol(int boxNum, int colNum) {
-		return subtract(BOXES[boxNum], COLS[colNum]);
-	}
-
-	public static int[] subtractBoxRow(int boxNum, int rowNum) {
-		return subtract(BOXES[boxNum], ROWS[rowNum]);
-	}
-
-	public static int[] subtractColBox(int colNum, int boxNum) {
-		return subtract(COLS[colNum], BOXES[boxNum]);
-	}
-
-	public static int[] subtractRowBox(int rowNum, int boxNum) {
-		return subtract(ROWS[rowNum], BOXES[boxNum]);
-	}
-
-	private static int[] subtract(int[] box, int[] line) {
-		// box and line have 6 non-matches
-		int[] ints = new int[6];
-		int cnt = 0;
-		for (int i = 0; i < box.length; i++) {
-			boolean found = false;
-			for (int j = 0; j < line.length; j++) {
-				if (box[i] == line[j]) {
-					found = true;
-					break;
-				}
-			}
-			if (!found) {
-				ints[cnt++] = box[i];
-			}
-		}
-		return ints;
 	}
 
 	/*
@@ -265,7 +230,7 @@ public class Board {
 		}
 
 		private void drawSummary() {
-			int[] counts = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+			int[] counts = VectorCache.drawSummaryVector();
 			for (int i = 0; i < board.length; i++) {
 				if (Cell.isFixed(board[i])) {
 					counts[Cell.getValue(board[i])]++;
