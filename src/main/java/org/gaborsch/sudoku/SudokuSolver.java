@@ -5,7 +5,7 @@ import java.util.List;
 public class SudokuSolver {
 	
 	boolean info = true;
-	boolean trace = true;
+	boolean trace = false;
 
 	private State state;
 
@@ -20,7 +20,7 @@ public class SudokuSolver {
 	public Board solve() {
 		int boardHash = 0;
 		do {
-			while (state.hasNextMove()) {
+			while (!state.getBoard().isSolved() && state.hasNextMove()) {
 				Move m = state.getNextMove();
 				Board b = state.getBoard();
 				info(m.toString());
@@ -34,8 +34,11 @@ public class SudokuSolver {
 					boardHash = b.hashCode();
 				}
 			}
-			new MoveGenerator(state).generateMoves();
-		} while (state.hasNextMove());
+			if(! state.getBoard().isSolved()) {
+				info("Generating moves...");
+				new MoveGenerator(state).generateMoves();
+			}
+		} while (!state.getBoard().isSolved() && state.hasNextMove());
 
 		return state.getBoard();
 	}
@@ -186,7 +189,7 @@ public class SudokuSolver {
 
 
 	public static void main(String[] args) {
-		List<Move> initialSetup = BoardReader.getBoard(SAMPLE_SETUP4);
+		List<Move> initialSetup = BoardReader.getBoard(SAMPLE_SETUP5);
 		SudokuSolver solver = new SudokuSolver(initialSetup);
 		Board solution = solver.solve();
 		System.out.println(solution.draw());
