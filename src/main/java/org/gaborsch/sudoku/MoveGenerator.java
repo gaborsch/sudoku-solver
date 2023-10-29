@@ -103,13 +103,13 @@ public class MoveGenerator {
 	private void generateMovesForSinglePossibilities() {
 		for (int v = 1; v <= 9; v++) {
 			for (int rn = 0; rn < 9; rn++) {
-				checkSingleValue(v, Board.getRowPositions(rn), "single value in a row");
+				checkSingleValue(v, Board.getRowPositions(rn), "single value in row " + (rn+1));
 			}
 			for (int cn = 0; cn < 9; cn++) {
-				checkSingleValue(v, Board.getColPositions(cn), "single value in a column");
+				checkSingleValue(v, Board.getColPositions(cn), "single value in column " + (cn+1));
 			}
 			for (int bn = 0; bn < 9; bn++) {
-				checkSingleValue(v, Board.getBoxPositions(bn), "single value in a box");
+				checkSingleValue(v, Board.getBoxPositions(bn), "single value in box " + (bn+1));
 			}
 		}
 	}
@@ -127,13 +127,13 @@ public class MoveGenerator {
 
 	private void generateMovesForPartitioning() {
 		for (int rn = 0; rn < 9; rn++) {
-			partition(Board.getRowPositions(rn), "partition by row");
+			partition(Board.getRowPositions(rn), "partition by row " + (rn+1));
 		}
 		for (int cn = 0; cn < 9; cn++) {
-			partition(Board.getColPositions(cn), "partition by col");
+			partition(Board.getColPositions(cn), "partition by col " + (cn+1));
 		}
 		for (int bn = 0; bn < 9; bn++) {
-			partition(Board.getBoxPositions(bn), "partition by box");
+			partition(Board.getBoxPositions(bn), "partition by box " + (bn+1));
 		}
 	}
 

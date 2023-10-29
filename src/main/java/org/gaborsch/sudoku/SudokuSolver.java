@@ -29,7 +29,7 @@ public class SudokuSolver {
 				} else if (m.getType() == Move.Type.CLEAR_FLOAT) {
 					doClearFloating(b, m);
 				}
-				if (boardHash != b.hashCode()) {
+				if (trace && boardHash != b.hashCode()) {
 					trace(b.draw());
 					boardHash = b.hashCode();
 				}
