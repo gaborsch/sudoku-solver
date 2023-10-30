@@ -169,6 +169,10 @@ public class Board {
 		return true;
 	}
 
+	public static String posToString(int pos) {
+		return "row " + (getRowNum(pos)+1) + ", column "+(getColNum(pos)+1);
+	}
+
 	public class BoardDrawer {
 		StringBuilder sb = new StringBuilder();
 

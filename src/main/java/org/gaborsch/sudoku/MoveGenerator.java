@@ -45,7 +45,7 @@ public class MoveGenerator {
 					excludeRowBoxPairs >>= 6;
 					// exclude value 'v' from row and box
 					int[] excludePositions = Board.intersectBoxRow(excludeBn, excludeRn);
-					excludeFloatings(v, excludePositions, "box "+excludeBn+" and row " + excludeRn);
+					excludeFloatings(v, excludePositions, "box " + (excludeBn + 1) + " and row " + (excludeRn + 1));
 				}
 
 			}
@@ -59,7 +59,7 @@ public class MoveGenerator {
 					excludeColBoxPairs >>= 6;
 					// exclude value 'v' from row and box
 					int[] excludePositions = Board.intersectBoxCol(excludeBn, excludeCn);
-					excludeFloatings(v, excludePositions, "box "+excludeBn+" and col " + excludeCn);
+					excludeFloatings(v, excludePositions, "box " + (excludeBn + 1) + " and col " + (excludeCn + 1));
 				}
 			}
 		}
@@ -103,13 +103,13 @@ public class MoveGenerator {
 	private void generateMovesForSinglePossibilities() {
 		for (int v = 1; v <= 9; v++) {
 			for (int rn = 0; rn < 9; rn++) {
-				checkSingleValue(v, Board.getRowPositions(rn), "single value in row " + (rn+1));
+				checkSingleValue(v, Board.getRowPositions(rn), "single value in row " + (rn + 1));
 			}
 			for (int cn = 0; cn < 9; cn++) {
-				checkSingleValue(v, Board.getColPositions(cn), "single value in column " + (cn+1));
+				checkSingleValue(v, Board.getColPositions(cn), "single value in column " + (cn + 1));
 			}
 			for (int bn = 0; bn < 9; bn++) {
-				checkSingleValue(v, Board.getBoxPositions(bn), "single value in box " + (bn+1));
+				checkSingleValue(v, Board.getBoxPositions(bn), "single value in box " + (bn + 1));
 			}
 		}
 	}
@@ -127,13 +127,13 @@ public class MoveGenerator {
 
 	private void generateMovesForPartitioning() {
 		for (int rn = 0; rn < 9; rn++) {
-			partition(Board.getRowPositions(rn), "partition by row " + (rn+1));
+			partition(Board.getRowPositions(rn), "partition of row " + (rn + 1));
 		}
 		for (int cn = 0; cn < 9; cn++) {
-			partition(Board.getColPositions(cn), "partition by col " + (cn+1));
+			partition(Board.getColPositions(cn), "partition of col " + (cn + 1));
 		}
 		for (int bn = 0; bn < 9; bn++) {
-			partition(Board.getBoxPositions(bn), "partition by box " + (bn+1));
+			partition(Board.getBoxPositions(bn), "partition of box " + (bn + 1));
 		}
 	}
 
@@ -145,10 +145,10 @@ public class MoveGenerator {
 			floatings[i] = Cell.getFloatings(board.getCell(positions[i]));
 			variantMask |= (floatings[i] > 0) ? 1 << i : 0;
 		}
-		int inverseMask =  ~ variantMask; // -variantMask - 1;
+		int inverseMask = ~variantMask; // -variantMask - 1;
 
 		// iterate through variants, all clear and all set excluded
-		for (int variant = 1; variant < 511; variant ++) {
+		for (int variant = 1; variant < 511; variant++) {
 			// if it has non-valid bits or has no valid bits or is full mask, then continue
 			if ((variant & inverseMask) > 0 || (variant & variantMask) == 0 || (variant & variantMask) == variantMask) {
 				continue;

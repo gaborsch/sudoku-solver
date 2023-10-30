@@ -82,7 +82,7 @@ public class SudokuSolver {
 				// if all others are cleared, save the new fixed value on the board
 				b.setCell(pos, Cell.setValue(fixedValue));
 				// and mark the set value for processing
-				state.addMove(Move.setValue(pos, fixedValue, "clearing a cell during setValue"));
+				state.addMove(Move.setValue(pos, fixedValue, "single cell value found during fixed value exclusion"));
 			}
 		}
 	}
@@ -100,15 +100,15 @@ public class SudokuSolver {
 		int fixedValue = Cell.findValue(cell);
 		if (fixedValue > 0) {
 			b.setCell(m.getPos(), Cell.setValue(fixedValue));
-			state.addMove(Move.setValue(m.getPos(), fixedValue, "clearing a cell"));
+			state.addMove(Move.setValue(m.getPos(), fixedValue, "single cell value"));
 		} else {
 			// check if only one possibility remained in the box / row / column
 			checkIfHasOnlyOneFloatingAtPositions(m.getValue(), Board.getBoxPositions(Board.getBoxNum(m.getPos())),
-					"box");
+					"box " + (Board.getBoxNum(m.getPos()) + 1));
 			checkIfHasOnlyOneFloatingAtPositions(m.getValue(), Board.getRowPositions(Board.getRowNum(m.getPos())),
-					"row");
+					"row " + (Board.getRowNum(m.getPos()) + 1));
 			checkIfHasOnlyOneFloatingAtPositions(m.getValue(), Board.getColPositions(Board.getColNum(m.getPos())),
-					"col");
+					"col "+ (Board.getColNum(m.getPos()) + 1));
 		}
 	}
 

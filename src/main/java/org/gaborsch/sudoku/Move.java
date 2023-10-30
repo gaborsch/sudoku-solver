@@ -40,6 +40,6 @@ public class Move {
 
 	@Override
 	public String toString() {
-		return type + " " + value + " @ " + pos + (note == null ? "" : " (" + note + ")");
+		return type + " " + value + ", " + Board.posToString(pos) + (note == null ? "" : " (" + note + ")");
 	}
 }
