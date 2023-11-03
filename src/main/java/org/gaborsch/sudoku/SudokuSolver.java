@@ -1,6 +1,8 @@
 package org.gaborsch.sudoku;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class SudokuSolver {
 	
@@ -8,6 +10,7 @@ public class SudokuSolver {
 	boolean trace = false;
 
 	private State state;
+	private Set<Move> processedMoves = new HashSet<>();
 
 	public SudokuSolver(List<Move> initialSetup) {
 		state = new State(new Board(), initialSetup);
@@ -23,7 +26,10 @@ public class SudokuSolver {
 			while (!state.getBoard().isSolved() && state.hasNextMove()) {
 				Move m = state.getNextMove();
 				Board b = state.getBoard();
-				info(m.toString());
+				if (!processedMoves.contains(m)) {
+					info(m.toString());
+					processedMoves.add(m);
+				}
 				if (m.getType() == Move.Type.SET_VALUE) {
 					doSetValue(b, m);
 				} else if (m.getType() == Move.Type.CLEAR_FLOAT) {
@@ -49,23 +55,23 @@ public class SudokuSolver {
 	
 	private void doSetValue(Board b, Move m) {
 		b.setFixedValue(m.getPos(), m.getValue());
-		int rn = Board.getRowNum(m.getPos());
-		setClearFloatsTo(b, Board.getRowPositions(rn), b.getRowValues(rn), m.getValue());
-		int cn = Board.getColNum(m.getPos());
-		setClearFloatsTo(b, Board.getColPositions(cn), b.getColValues(cn), m.getValue());
-		int bn = Board.getBoxNum(m.getPos());
-		setClearFloatsTo(b, Board.getBoxPositions(bn), b.getBoxValues(bn), m.getValue());
+		int rn = m.getRowNum();
+		setClearFloatsTo(b, Board.getRowPositions(rn), b.getRowValues(rn), m.getValue(), "clearing " + m.getRowCoord() + " for " + m.getCoords());
+		int cn = m.getColNum();
+		setClearFloatsTo(b, Board.getColPositions(cn), b.getColValues(cn), m.getValue(), "clearing " + m.getColCoord() + " for " + m.getCoords());
+		int bn = m.getBoxNum();
+		setClearFloatsTo(b, Board.getBoxPositions(bn), b.getBoxValues(bn), m.getValue(), "clearing " + m.getBoxCoord() + " for " + m.getCoords());
 	}
 
-	private void setClearFloatsTo(Board b, int[] positions, int[] cellValues, int value) {
+	private void setClearFloatsTo(Board b, int[] positions, int[] cellValues, int value, String note) {
 		for (int i = 0; i < cellValues.length; i++) {
 			if (!Cell.isFixed(cellValues[i])) {
-				setClearFloatTo(b, positions[i], cellValues[i], value);
+				setClearFloatTo(b, positions[i], cellValues[i], value, note);
 			}
 		}
 	}
 
-	private void setClearFloatTo(Board b, int pos, int cell, int value) {
+	private void setClearFloatTo(Board b, int pos, int cell, int value, String note) {
 		// if this value has not been cleared yet
 		if (Cell.isFloating(cell, value)) {
 			// clear float value
@@ -77,7 +83,7 @@ public class SudokuSolver {
 				// if more than 1, then save the cleared value
 				b.setCell(pos, newCell);
 				// and mark the clear float for processing
-				state.addMove(Move.clearFloat(pos, value, null));
+				state.addMove(Move.clearFloat(pos, value, note));
 			} else {
 				// if all others are cleared, save the new fixed value on the board
 				b.setCell(pos, Cell.setValue(fixedValue));
@@ -103,12 +109,9 @@ public class SudokuSolver {
 			state.addMove(Move.setValue(m.getPos(), fixedValue, "single cell value"));
 		} else {
 			// check if only one possibility remained in the box / row / column
-			checkIfHasOnlyOneFloatingAtPositions(m.getValue(), Board.getBoxPositions(Board.getBoxNum(m.getPos())),
-					"box " + (Board.getBoxNum(m.getPos()) + 1));
-			checkIfHasOnlyOneFloatingAtPositions(m.getValue(), Board.getRowPositions(Board.getRowNum(m.getPos())),
-					"row " + (Board.getRowNum(m.getPos()) + 1));
-			checkIfHasOnlyOneFloatingAtPositions(m.getValue(), Board.getColPositions(Board.getColNum(m.getPos())),
-					"col "+ (Board.getColNum(m.getPos()) + 1));
+			checkIfHasOnlyOneFloatingAtPositions(m.getValue(), Board.getRowPositions(m.getRowNum()), m.getRowCoord());
+			checkIfHasOnlyOneFloatingAtPositions(m.getValue(), Board.getColPositions(m.getColNum()), m.getColCoord());
+			checkIfHasOnlyOneFloatingAtPositions(m.getValue(), Board.getBoxPositions(m.getBoxNum()), m.getBoxCoord());
 		}
 	}
 
@@ -188,8 +191,20 @@ public class SudokuSolver {
 			+ "6    9  1\n";
 
 
+	public static final String SAMPLE_SETUP6 = 
+			  " 8    1  \n"
+			+ " 9 2  7  \n"
+			+ " 57   83 \n"
+			+ "928374561\n"
+			+ "7 3  54  \n"
+			+ "4 59     \n"
+			+ "672 3 9 4\n"
+			+ "831  9   \n"
+			+ "549    1 ";
+	
+	
 	public static void main(String[] args) {
-		List<Move> initialSetup = BoardReader.getBoard(SAMPLE_SETUP5);
+		List<Move> initialSetup = BoardReader.getBoard(SAMPLE_SETUP6);
 		SudokuSolver solver = new SudokuSolver(initialSetup);
 		Board solution = solver.solve();
 		System.out.println(solution.draw());
