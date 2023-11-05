@@ -26,6 +26,15 @@ public class SudokuSolver {
 			while (!state.getBoard().isSolved() && state.hasNextMove()) {
 				Move m = state.getNextMove();
 				Board b = state.getBoard();
+				if ((trace && boardHash != b.hashCode()) 
+						|| (info && boardHash == 0)) {
+					if (trace)  { 
+						trace(b.draw());
+					} else {
+						info(b.draw());
+					}
+					boardHash = b.hashCode();
+				}
 				if (!processedMoves.contains(m)) {
 					info(m.toString());
 					processedMoves.add(m);
@@ -35,14 +44,11 @@ public class SudokuSolver {
 				} else if (m.getType() == Move.Type.CLEAR_FLOAT) {
 					doClearFloating(b, m);
 				}
-				if (trace && boardHash != b.hashCode()) {
-					trace(b.draw());
-					boardHash = b.hashCode();
-				}
 			}
 			if(! state.getBoard().isSolved()) {
 				info("Generating moves...");
 				new MoveGenerator(state).generateMoves();
+				boardHash = 0;
 			}
 		} while (!state.getBoard().isSolved() && state.hasNextMove());
 
@@ -200,11 +206,22 @@ public class SudokuSolver {
 			+ "4 59     \n"
 			+ "672 3 9 4\n"
 			+ "831  9   \n"
-			+ "549    1 ";
+			+ "549    1 \n";
+	
+	public static final String SAMPLE_SETUP7 = 
+			    " 9   2  3\n"
+			  + "72 9  8  \n"
+			  + "    78926\n"
+			  + "    6   9\n"
+			  + "1   9    \n"
+			  + " 79 31 85\n"
+			  + " 54    9 \n"
+			  + "  751934 \n"
+			  + "9  7 4   \n";
 	
 	
 	public static void main(String[] args) {
-		List<Move> initialSetup = BoardReader.getBoard(SAMPLE_SETUP6);
+		List<Move> initialSetup = BoardReader.getBoard(SAMPLE_SETUP7);
 		SudokuSolver solver = new SudokuSolver(initialSetup);
 		Board solution = solver.solve();
 		System.out.println(solution.draw());

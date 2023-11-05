@@ -30,6 +30,10 @@ When a value can appear in only one cell in a row, column or a box, that value c
 
 When examining a box, if a value can appear only in one row in that box, that value is excluded from other cells in that row (i.e. from other boxes that this row intersects). The same applies for columns. This is calculated when the solver ran out of previous moves.
 
+### Exclusion by complementers of row or columns
+
+When a row intersects a box, the 3 cells may contain possible values that are not present in other cells of that row. It means that these values must be in the intersecting cells, nowhere else in that box. So, these must be cleared off from the complementing rows in that box. For columns, the same applies.
+
 ### Partitioning the values in row, column or box
 
 This is the most complex move generation. Let's examine a row. If the first two cells can contain only two values altogether, all other cells in that row must not contain those two values. Otherwise, should those values be used in other cells, we couldn't set a value to one of the first two cells.

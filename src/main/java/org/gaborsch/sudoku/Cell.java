@@ -42,6 +42,11 @@ public class Cell {
 		return (bits & MASK_FLOATING) >> SHIFT_FLOATING;
 	}
 
+	public static int getFixedAsFloatings(int bits) {
+		// simulate floating bit for fixed value
+		return (bits & MASK_FLOATING | MASK_FLOATING_BY_VALUE[(bits & MASK_VALUE) >> SHIFT_VALUE]) >> SHIFT_FLOATING;
+	}
+
 	public static boolean isFloating(int bits, int value) {
 		return (bits & MASK_FLOATING_BY_VALUE[value]) > 0;
 	}
@@ -99,7 +104,22 @@ public class Cell {
 		}
 		sb.append("  ").append(Integer.toBinaryString(bits));
 		
+		return sb.toString();
+	}
+
+	public static String explain(int bits) {
+		StringBuilder sb = new StringBuilder();
+		if (isFixed(bits)) {
+			sb.append("Fixed ");
+		}
+		sb.append("value: ").append(getValue(bits));
+		sb.append(", Floatings: (").append(getCount(bits)).append(") ");
+		for (int i = 1; i <= 9; i++) {
+			sb.append(isFloating(bits, i) ? (char)('0'+ i) : '_');
+		}
+		sb.append("  Binary: ").append(Integer.toBinaryString(bits));
 		
 		return sb.toString();
 	}
+
 }

@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import org.gaborsch.sudoku.Move.Type;
+
 public class State {
 
 	private Board board;
@@ -16,15 +18,19 @@ public class State {
 
 	public State(Board board, List<Move> initialMoves) {
 		this.board = board;
-		initialMoves.forEach(this::addMove);
+		addMoves(initialMoves);
 	}
 
 	public Board getBoard() {
 		return board;
 	}
-	
+
 	public void addMoves(List<Move> moves) {
 		moves.forEach(this::addMove);
+		moves
+			.stream()
+			.filter(m -> m.getType() == Type.SET_VALUE)
+			.forEach(m -> board.setFixedValue(m.getPos(), m.getValue()));
 	}
 
 	public void addMove(Move m) {

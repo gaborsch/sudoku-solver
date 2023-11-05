@@ -137,9 +137,9 @@ public class SudokuSolverCli {
 		msg("    clear v rn cn - clear possible value v from row rn and col cn. rn and cn can be 1-9");
 		msg("    clear v P pos  - clear possible value v from position. pos can be 0-80 (pos 0 is row 1, col 1)");
 		msg("x, exit");
-		msg("    Exits from the program");
+		msg("    Exit the program");
 		msg("h, help");
-		msg("    prints this help");
+		msg("    print this help");
 
 	}
 
